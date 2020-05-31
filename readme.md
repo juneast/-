@@ -11,7 +11,7 @@
 collection에 insert 할 땐 속성에 해당 컬렉션의 Object Id를 할당하고 insert.
 
 조회할 땐 populate로 타 collection과 연동하여 조회.
-> collection.find({}).populate('User')
+> collection.find({}).populate('속성명')
 ## Node + express
 
 ## React
@@ -19,6 +19,7 @@ collection에 insert 할 땐 속성에 해당 컬렉션의 Object Id를 할당�
 ## 프론트
 
 ## 백엔드
+#### [HTTP 상태 코드](https://developer.mozilla.org/ko/docs/Web/HTTP/Status)
 
 ## Java + Spring
 
