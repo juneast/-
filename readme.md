@@ -64,7 +64,57 @@ collection에 insert 할 땐 속성에 해당 컬렉션의 Object Id를 할당�
  - 소문자 사용
  - 행위는 URL에 포함하지 않음
  - 컨트롤 자원을 의미하는 URL은 예외적으로 동사 허용 ( 컨트롤 자원이 뭐야... )
+## Nginx 설정
+#### # 설정 파일 종류
+|이름|설정| 
+|:---:|:---:| 
+|nginx.conf|애플리케이션의 기본 환경 설정|
+|mime.types|파일 확장명과 MIME 타입 목록|
+|fastcgi.conf|FastCGI 관련 환경 설정|
+|proxy.conf|프록시 관련 환경 설정|
+|sties.conf|엔진엑스에 의해 서비스되는 가상 호스트 웹사이트 환경설정.  도메인마다 파일을 분리해서 만들 것을 권장|
+#### # 서버블록
+http 블록 안에는 한 개 이상의 서버 블록을 선언할 수 있다. 하나의 server 블록은 하나의 가상 호스트를 구성한다.
+```
+server {
+        listen       3333;
+        server_name  localhost;
 
+        location / {
+            proxy_pass http://nodejs_server;
+        }
+        location = /50x.html {
+            root   html;
+        }
+
+}
+```
+location 블락은 해당 서버내에서 url에 따라 다른 동작을 하고 싶을 때 사용한다.
+#### # Upstream
+````
+upstream nodejs_server {
+	#least_conn;
+	#ip_hash;
+	server localhost:3000 weight=10 max_fails=3 fail_timeout=2s;
+	server localhost:3001 weight=10 max_fails=3 fail_timeout=2s;
+	server localhost:3002 weight=10 max_fails=3 fail_timeout=2s;
+	server localhost:3003 weight=10 max_fails=3 fail_timeout=2s;
+    }
+````
+Nginx에서 Origin 서버를 지정해준다. 주소와 포트를 명시하고 옵션과 알고리즘을 조합해 분산 방법을 결정할 수 있다. 디폴트 알고리즘은 가중치 라운드로빈 방식이다.
+옵션은 아래와 같다!
+- ip_hash : 클라이언트 ip 주소에 따라 서버에 분산한다. 같은 ip면 같은 서버로 분산된다.
+- least_conn : active connection이 가장 적은 서버에 분산한다.
+- least_time : 평균 응답 시간이 가장 작은 서버에 분산한다.
+- weight : 업스트림 서버의 가중치
+- max_fails : 설정한만큼 실패가 일어나면 서버가 죽은 것으로 간주
+- fail_timeout : 설정한 시간만큼 응답이 없으면 실패
+- down : 해당 서버를 사용하지 않게 지정. ip_hash 지시어가 설정된 상태에서만 유효
+- backup : 모든 서버가 동작하지 않을 때 backup으로 표시한 서버만 사용, 그 전엔 동작 X
+- keepalive : 업스트립서버연결의 캐시를 활성화한다. 개수를 지정할 수 있으며 개수 초과시 LRU로 캐시 교체
+
+참고 : https://opentutorials.org/module/384/4328  
+http://nginx.org/en/docs/http/ngx_http_upstream_module.html#zone
 ## 네트워크
 #### # 웹소켓
 웹소켓 연결되어 있는 하나의 커넥션에서 낮은 레이턴시로 쌍방향 커뮤니케이션을 하기 위한 통신 규약이다.  
