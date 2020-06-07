@@ -155,3 +155,8 @@ http://nginx.org/en/docs/http/ngx_http_upstream_module.html#zone
    - 브라우저에게 TCP 기반의 통신으로 확장해야 하는 경우
    - 개발자에게 사용하기 쉬운 API가 필요한 경우
    - 클라우드 환경이나 웹을 넘어 SOA(Service Oriented Architecture)로 확장해야 하는 경우
+## 데이터베이스
+#### # 맵리듀스
+- 여러 노드에 테스크를 분배하여 처리하는 방법이다.
+- 하둡에서는 계산시 큰 파일을 블럭단위(64MB)로 나누고 모든 블럭은 같은 Map 작업을 수행하고 이후 Reduce 작업을 수행한다.
+- 동작과정은 Input Split -> Mapping -> Shuffling -> Reducer -> Output 순서가 된다.
