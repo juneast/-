@@ -41,7 +41,7 @@ const Slider = () => {
 
 useReducer를 사용해 Action에 따른 상태관리도 가능
 
-```javscript
+```javascript
 //reducer 함수 정의
 const reducer = (state, action) => {
     switch(action.type) {
